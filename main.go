@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -9,19 +11,19 @@ import (
 )
 
 type event struct {
-	ID string `json:"ID"`
-	Title string `json:"Title"`
-	Description string `json: "Description"`
+	ID          string `json:"ID"`
+	Title       string `json:"Title"`
+	Description string `json:"Description"`
 }
 
 type allEvents []event
 
 var events = allEvents{
 	{
-		ID: "1",
-		Title: "Introduction to Golang",
-		Description: "Come join us for a chance to learn how golang works and get to eventually try it out."
-	}
+		ID:          "1",
+		Title:       "Introduction to Golang",
+		Description: "Come join us for a chance to learn how golang works and get to eventually try it out.",
+	},
 }
 
 func homeLink(w http.ResponseWriter, r *http.Request) {
@@ -45,5 +47,6 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
+	router.HandleFunc("/event", createEvent).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
